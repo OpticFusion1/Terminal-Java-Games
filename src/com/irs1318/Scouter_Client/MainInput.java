@@ -8,7 +8,7 @@ import android.widget.*;
 
 public class MainInput extends Activity {
     int defaultMax = 10;
-    int objectNum = 23;
+    int objectNum = 22;
     int columns = 0;
     int pageId = 0;
     String text;
@@ -23,48 +23,49 @@ public class MainInput extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        for (i = 0; i < objectNum; i++) {
+        for (i = 1; i < objectNum; i++) {
             switch(i) {
-                case 0:
-                    objectName[0] = "First Page";
-                    objectType[0] = 1;
-                    break;
                 case 1:
                     objectName[1] = "First Set";
                     objectType[1] = 2;
                     break;
-                case 2:case 3:case 4:case 5:
+                case 2:case 3:case 4:
                     objectName[i] = "Multiple Choice";
                     objectType[i] = 6;
                     break;
-                case 6:
+                case 5:
                     objectName[i] = "Second Set ";
                     objectType[i] = 2;
                     break;
-                case 7:case 8:
+                case 6:case 7:
                     objectName[i] = "Buttons";
                     objectType[i] = 4;
                     break;
-                case 9:
+                case 8:
                     objectName[i] = "Second Page";
                     objectType[i] = 1;
                     break;
-                case 10:
+                case 9:
                     objectName[i] = "First Set";
                     objectType[i] = 2;
                     break;
-                case 11:case 12:case 13:case 14:case 15:case 16:case 17:case 18:case 19:
+                case 10:case 11:case 12:case 13:case 14:case 15:case 16:case 17:case 18:
                     objectName[i] = "Switches";
                     objectType[i] = 3;
                     break;
-                case 20:
+                case 19:
                     objectName[i] = "Second Set";
                     objectType[i] = 2;
                     break;
-                case 21:
+                case 20:
                     objectName[i] = "Seek-Bar";
                     objectType[i] = 5;
                     break;
+                case 21:
+                    objectName[i] = "First Page";
+                    objectType[i] = 7;
+                    break;
+
             }
         }
         loadObjects();
@@ -72,23 +73,27 @@ public class MainInput extends Activity {
 
     public void loadObjects() {
         LinearLayout mainLayout = (LinearLayout) findViewById(R.id.mainLayout);
-        LinearLayout tabLayout = (LinearLayout) findViewById(R.id.tabLayout);
 
         LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setId(objectNum);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         mainLayout.addView(linearLayout);
 
         GridLayout gridLayout = new GridLayout(this);
         linearLayout.addView(gridLayout);
 
-        for (i = 0; i < objectNum; i++) {
+        RadioGroup radioGroup = new RadioGroup(this);
+        boolean inRadio = false;
+        int oldPageId = 0;
+
+        for(i = 0; i < objectNum; i++) {
             switch(objectType[i]) {
                 case 1:
                     Button button = new Button(this);
                     button.setText(objectName[i]);
                     button.setOnClickListener(pageListener);
                     button.setId(i);
-                    tabLayout.addView(button);
+                    linearLayout.addView(button);
 
                     linearLayout = new LinearLayout(this);
                     linearLayout.setId(i + objectNum);
@@ -98,7 +103,11 @@ public class MainInput extends Activity {
 
                     gridLayout = new GridLayout(this);
                     linearLayout.addView(gridLayout);
+
                     columns = 0;
+                    inRadio = false;
+                    oldPageId = pageId;
+                    pageId = i;
                     break;
                 case 2:
                     TextView textView = new TextView(this);
@@ -109,7 +118,9 @@ public class MainInput extends Activity {
 
                     gridLayout = new GridLayout(this);
                     linearLayout.addView(gridLayout);
+
                     columns = 0;
+                    inRadio = false;
                     break;
                 case 3:
                     CheckBox checkBox = new CheckBox(this);
@@ -143,26 +154,41 @@ public class MainInput extends Activity {
                     columns = 0;
                     break;
                 case 6:
+                    if(!inRadio) {
+                        radioGroup = new RadioGroup(this);
+                        gridLayout.addView(radioGroup);
+                        inRadio = true;
+                    }
+
                     RadioButton radioButton = new RadioButton(this);
                     radioButton.setText(objectName[i]);
                     radioButton.setId(i);
-                    radioButton.setOnCheckedChangeListener(checkedChangeListener);
-                    gridLayout.addView(radioButton);
+                    radioGroup.addView(radioButton);
+                    break;
+                case 7:
+                    LinearLayout pageEnd = new LinearLayout(this);
+                    linearLayout.addView(pageEnd);
+                    linearLayout = pageEnd;
+
+                    button = new Button(this);
+                    button.setText(objectName[i]);
+                    button.setOnClickListener(pageListener);
+                    button.setId(oldPageId);
+                    linearLayout.addView(button);
                     break;
             }
             gridLayout.setColumnCount(3);
             columns++;
-            Point size = new Point();
-            getWindowManager().getDefaultDisplay().getSize(size);
-            if(gridLayout.getY() > size.y) gridLayout.setColumnCount(columns);
         }
+        pageId = objectNum;
     }
     Button.OnClickListener pageListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(pageId != 0) findViewById(pageId).setVisibility(View.GONE);
-            findViewById(v.getId() + objectNum).setVisibility(View.VISIBLE);
-            pageId = v.getId() + objectNum;
+            findViewById(pageId).setVisibility(View.GONE);
+            i = v.getId();
+            findViewById(i + objectNum).setVisibility(View.VISIBLE);
+            pageId = i + objectNum;
         }
     };
     Button.OnClickListener clickListener = new Button.OnClickListener() {
@@ -189,13 +215,6 @@ public class MainInput extends Activity {
         }
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
-        }
-    };
-    RadioButton.OnCheckedChangeListener checkedChangeListener = new RadioButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            for(i = buttonView.getId() - 1; objectType[i] != 2 && objectType[i] != 1; i--) if(objectValue[i] == 6) findViewById(i).setActivated(false);
-            for(i = buttonView.getId() + 1; objectType[i] != 2 && objectType[i] != 1; i++) if(objectValue[i] == 6) findViewById(i).setActivated(false);
         }
     };
 }
