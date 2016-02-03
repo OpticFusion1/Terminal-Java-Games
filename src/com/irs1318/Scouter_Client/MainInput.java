@@ -1,30 +1,48 @@
 package com.irs1318.Scouter_Client;
 
 import android.app.Activity;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
+import com.irs1318.Scouter_Client.Net.*;
 
 public class MainInput extends Activity {
     int defaultMax = 10;
     int objectNum = 22;
-    int columns = 0;
     int pageId = 0;
-    String text;
     int i;
-
+    String text;
     String[] objectName = new String[objectNum];
     int[] objectType = new int[objectNum];
     int[] objectValue = new int[objectNum];
+    TCPClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+    }
+    public void dataThing(TCPClient client) {
+        NetworkPacket[] networkPackets = client.GetPackets();
+        for (i = 0; i < networkPackets.length; i++) {
+            objectName[i] = networkPackets[i].Name;
+            objectType[i] = networkPackets[i].DataAsInt();
+        }
+        loadObjects();
+    }
 
+    public void connect() {
+        EditText editText = (EditText) findViewById(R.id.editText);
+        client = new TCPClient(11111, editText.getText().toString());
+        client.OnDataAvailable.add(this::dataThing);
+    }
+
+    public void noConnect() {
         for (i = 1; i < objectNum; i++) {
             switch(i) {
+                case 0:
+                    objectName[i] = "First Page";
+                    break;
                 case 1:
                     objectName[1] = "First Set";
                     objectType[1] = 2;
@@ -34,7 +52,7 @@ public class MainInput extends Activity {
                     objectType[i] = 6;
                     break;
                 case 5:
-                    objectName[i] = "Second Set ";
+                    objectName[i] = "Second Set";
                     objectType[i] = 2;
                     break;
                 case 6:case 7:
@@ -65,14 +83,16 @@ public class MainInput extends Activity {
                     objectName[i] = "First Page";
                     objectType[i] = 7;
                     break;
-
             }
         }
         loadObjects();
     }
 
     public void loadObjects() {
-        LinearLayout mainLayout = (LinearLayout) findViewById(R.id.mainLayout);
+        LinearLayout mainLayout = (LinearLayout) findViewById(R.id.startLayout);
+        mainLayout.setVisibility(View.GONE);
+
+        mainLayout = (LinearLayout) findViewById(R.id.mainLayout);
 
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setId(objectNum);
@@ -80,15 +100,26 @@ public class MainInput extends Activity {
         mainLayout.addView(linearLayout);
 
         GridLayout gridLayout = new GridLayout(this);
+        gridLayout.addOnLayoutChangeListener(layoutChangeListener);
+        gridLayout.setColumnCount(3);
         linearLayout.addView(gridLayout);
 
         RadioGroup radioGroup = new RadioGroup(this);
         boolean inRadio = false;
+        boolean newPage = false;
         int oldPageId = 0;
 
-        for(i = 0; i < objectNum; i++) {
+        for(i = 1; i < objectNum; i++) {
             switch(objectType[i]) {
                 case 1:
+                    if(!newPage) {
+                        gridLayout = new GridLayout(this);
+                        gridLayout.setColumnCount(2);
+                        linearLayout.addView(gridLayout);
+
+                        Space space = new Space(this);
+                        gridLayout.addView(space);
+                    }
                     Button button = new Button(this);
                     button.setText(objectName[i]);
                     button.setOnClickListener(pageListener);
@@ -102,12 +133,14 @@ public class MainInput extends Activity {
                     mainLayout.addView(linearLayout);
 
                     gridLayout = new GridLayout(this);
+                    gridLayout.addOnLayoutChangeListener(layoutChangeListener);
+                    gridLayout.setColumnCount(3);
                     linearLayout.addView(gridLayout);
 
-                    columns = 0;
                     inRadio = false;
                     oldPageId = pageId;
                     pageId = i;
+                    newPage = false;
                     break;
                 case 2:
                     TextView textView = new TextView(this);
@@ -117,9 +150,10 @@ public class MainInput extends Activity {
                     linearLayout.addView(textView);
 
                     gridLayout = new GridLayout(this);
+                    gridLayout.addOnLayoutChangeListener(layoutChangeListener);
+                    gridLayout.setColumnCount(3);
                     linearLayout.addView(gridLayout);
 
-                    columns = 0;
                     inRadio = false;
                     break;
                 case 3:
@@ -150,8 +184,9 @@ public class MainInput extends Activity {
                     linearLayout.addView(seekBar);
 
                     gridLayout = new GridLayout(this);
+                    gridLayout.addOnLayoutChangeListener(layoutChangeListener);
+                    gridLayout.setColumnCount(3);
                     linearLayout.addView(gridLayout);
-                    columns = 0;
                     break;
                 case 6:
                     if(!inRadio) {
@@ -166,22 +201,35 @@ public class MainInput extends Activity {
                     radioGroup.addView(radioButton);
                     break;
                 case 7:
-                    LinearLayout pageEnd = new LinearLayout(this);
-                    linearLayout.addView(pageEnd);
-                    linearLayout = pageEnd;
+                    gridLayout = new GridLayout(this);
+                    gridLayout.setColumnCount(2);
+                    linearLayout.addView(gridLayout);
 
                     button = new Button(this);
                     button.setText(objectName[i]);
                     button.setOnClickListener(pageListener);
                     button.setId(oldPageId);
-                    linearLayout.addView(button);
+                    gridLayout.addView(button);
+
+                    newPage = true;
+                    break;
+                case 8:
+                    textView = new TextView(this);
+                    textView.setText(objectName[i]);
+                    textView.setTextSize(15);
+                    gridLayout.addView(textView);
                     break;
             }
-            gridLayout.setColumnCount(3);
-            columns++;
         }
         pageId = objectNum;
     }
+    GridLayout.OnLayoutChangeListener layoutChangeListener = new GridLayout.OnLayoutChangeListener() {
+        @Override
+        public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+            GridLayout gridLayout = (GridLayout) view;
+            //if(view.getWidth()) gridLayout.setColumnCount(gridLayout.getColumnCount() - 1);
+        }
+    };
     Button.OnClickListener pageListener = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
