@@ -1,13 +1,13 @@
 import java.util.*;
 
 public class Main {
-	public static void main(String[] args) {
-		Scanner scanner = new Scanner(System.in);
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
         System.out.print("Grid Size:");
         int size = Integer.valueOf(scanner.nextLine());
         System.out.print("Mine Count:");
         int mines = Integer.valueOf(scanner.nextLine());
-        
+
         int[][] field = new int[size][size];
         for(int x = 0; x < size; x++) for(int y = 0; y < size; y++) field[x][y] = 0;
         for(int i = 0; i < mines; i++) {
@@ -35,11 +35,11 @@ public class Main {
             }
         }
         MineSweeper mineSweeper = new MineSweeper();
-        mineSweeper.Derive(field,size,scanner);
+        mineSweeper.Derive(field, size, scanner);
 
         System.out.println("Enter to continue");
         scanner.nextLine();
         scanner.close();
         System.exit(0);
-	}
+    }
 }

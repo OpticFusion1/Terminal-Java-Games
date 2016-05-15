@@ -62,16 +62,15 @@ public class MineSweeper {
             SetGrid();
         } else {
             int y = gridPrint.selectY;
-            boolean moving = true;
             int dirY = 1;
-            int dirX = 1;
             while(dirY != 0) {
+                boolean moving = true;
                 while(gridPrint.contains(gridPrint.selectX, y) && moving && mineField[gridPrint.selectX][y] != 19) {
                     if(mineField[gridPrint.selectX][y] > 9) {
                         mineField[gridPrint.selectX][y] -= 10;
                         covered--;
                     }
-                    dirX = 1;
+                    int dirX = 1;
                     while(dirX != 0) {
                         moving = true;
                         int x = gridPrint.selectX + dirX;
@@ -80,17 +79,21 @@ public class MineSweeper {
                                 mineField[x][y] -= 10;
                                 covered--;
                             }
-                            if(mineField[x][y] == 0) x += dirX;
+                            if(mineField[x][y] == 0) {
+                                x += dirX;
+                                if(gridPrint.contains(x,y + dirY) && mineField[x][y + dirY] > 9) {
+                                    mineField[x][y + dirY] -= 10;
+                                    covered--;
+                                }
+                            }
                             else moving = false;
                         }
                         if(dirX == 1) dirX = -1;
                         else dirX = 0;
                     }
                     moving = false;
-                    if(mineField[gridPrint.selectX][y] == 0) {
-                        y += dirY;
-                        if(gridPrint.contains(gridPrint.selectX, y)) moving = true;
-                    }
+                    y += dirY;
+                    if(gridPrint.contains(gridPrint.selectX, y)) moving = true;
                 }
                 if(dirY == 1) {
                     dirY = -1;
