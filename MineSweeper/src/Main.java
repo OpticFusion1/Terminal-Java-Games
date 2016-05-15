@@ -7,7 +7,6 @@ public class Main {
         int size = Integer.valueOf(scanner.nextLine());
         System.out.print("Mine Count:");
         int mines = Integer.valueOf(scanner.nextLine());
-        scanner.close();
         
         int[][] field = new int[size][size];
         for(int x = 0; x < size; x++) for(int y = 0; y < size; y++) field[x][y] = 0;
@@ -36,6 +35,11 @@ public class Main {
             }
         }
         MineSweeper mineSweeper = new MineSweeper();
-        mineSweeper.Derive(field,size);
+        mineSweeper.Derive(field,size,scanner);
+
+        System.out.println("Enter to continue");
+        scanner.nextLine();
+        scanner.close();
+        System.exit(0);
 	}
 }
