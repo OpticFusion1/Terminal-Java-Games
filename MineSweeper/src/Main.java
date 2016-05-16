@@ -5,8 +5,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Grid Size:");
         int size = Integer.valueOf(scanner.nextLine());
-        System.out.print("Mine Count:");
-        int mines = Integer.valueOf(scanner.nextLine());
+        int mines = size * size / 8;
 
         int[][] field = new int[size][size];
         for(int x = 0; x < size; x++) for(int y = 0; y < size; y++) field[x][y] = 0;

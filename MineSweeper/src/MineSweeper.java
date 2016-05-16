@@ -30,11 +30,12 @@ public class MineSweeper {
         }
         gridPrint.row = set;
         while(inGame) {
+            System.out.println("Remaining spaces:" + (covered - mines));
             SetGrid();
             System.out.print("Select Cell: ");
             String s = scanner.nextLine();
-            gridPrint.Select(s.toUpperCase());
-            NextTurn();
+            if(gridPrint.Select(s.toUpperCase())) NextTurn();
+            else System.out.println("Error: try again");
         }
     }
 
