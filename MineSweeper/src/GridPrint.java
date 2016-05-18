@@ -1,16 +1,17 @@
-
 public class GridPrint {
+    boolean searchLock = true;
     String[][] content;
-    int selectX = 0;
-    int selectY = 0;
     String[] column;
     String[] row;
+    int selectX = 0;
+    int selectY = 0;
+
     public void Generate() {
-        System.out.print("#  ");
+        System.out.print("\u001B[32m" + "#  ");
         for(String s : column) System.out.print(s + " ");
         for(int y = 0; y < row.length; y++) {
             System.out.println();
-            System.out.print(row[y]);
+            System.out.print("\u001B[32m" + row[y] + "\u001B[0m");
             for(int x = 0; x < column.length; x++) {
                 if(y == selectY && x == selectX) System.out.print("[");
                 else if(y == selectY && x > 0 && x == selectX + 1) System.out.print("]");
@@ -19,30 +20,46 @@ public class GridPrint {
             }
             if(y == selectY && row.length - 1 == selectX) System.out.print("]");
             else System.out.print(" ");
-            System.out.print(row[y]);
+            System.out.print("\u001B[32m" + row[y] + "\u001B[0m");
         }
         System.out.println();
-        System.out.print("   ");
+        System.out.print("\u001B[32m" + "   ");
         for(String s : column) System.out.print(s + " ");
-        System.out.println();
+        System.out.println("\u001B[0m");
     }
+
     public boolean Select(String cell) {
+        cell = cell.toLowerCase();
         selectX = 0;
         selectY = 0;
         boolean moving = true;
-        if(cell.split(" ").length < 2) return false;
+        if(cell.split(" ").length < 2) {
+            if(searchLock) return false;
+            else {
+                while(contains(0,selectY)) {
+                    selectX = 0;
+                    while(contains(selectX,selectY)) {
+                        if(content[selectX][selectY].toLowerCase().contains(cell)) return true;
+                        selectX++;
+                    }
+                    selectY++;
+                }
+                return false;
+            }
+        }
         while(selectX < column.length && moving) {
-            if(!column[selectX].contains(cell.split(" ")[0])) selectX++;
+            if(!column[selectX].toLowerCase().contains(cell.split(" ")[0])) selectX++;
             else moving = false;
         }
         if(moving) return false;
         moving = true;
         while(selectY < row.length && moving) {
-            if(!row[selectY].contains(cell.split(" ")[1])) selectY++;
+            if(!row[selectY].toLowerCase().contains(cell.split(" ")[1])) selectY++;
             else moving = false;
         }
         return !moving;
     }
+
     public boolean contains(int x, int y) {
         if(x >= 0 && x < column.length && y >= 0 && y < row.length) return true;
         else return false;

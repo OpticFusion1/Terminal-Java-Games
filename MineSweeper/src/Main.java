@@ -6,8 +6,9 @@ public class Main {
         System.out.print("Grid Size:");
         int size = Integer.valueOf(scanner.nextLine());
         int mines = size * size / 8;
-
         int[][] field = new int[size][size];
+        System.out.println();
+
         for(int x = 0; x < size; x++) for(int y = 0; y < size; y++) field[x][y] = 0;
         for(int i = 0; i < mines; i++) {
             boolean unSet = true;
