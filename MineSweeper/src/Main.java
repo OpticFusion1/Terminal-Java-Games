@@ -14,28 +14,16 @@ public class Main {
             boolean unSet = true;
             while(unSet) {
                 Random rand = new Random();
-                int x = rand.nextInt(size);
-                int y = rand.nextInt(size);
-                if(field[x][y] != 9) {
+                int randX = rand.nextInt(size);
+                int randY = rand.nextInt(size);
+                if(field[randX][randY] != 9) {
                     unSet = false;
-                    field[x][y] = 9;
-                    if(y < size - 1) {
-                        if(x > 0 && field[x - 1][y + 1] != 9) field[x - 1][y + 1]++;
-                        if(field[x][y + 1] != 9) field[x][y + 1]++;
-                        if(x < size - 1 && field[x + 1][y + 1] != 9) field[x + 1][y + 1]++;
-                    }
-                    if(x > 0 && field[x - 1][y] != 9) field[x - 1][y]++;
-                    if(x < size - 1 && field[x + 1][y] != 9) field[x + 1][y]++;
-                    if(y > 0) {
-                        if(x > 0 && field[x - 1][y - 1] != 9) field[x - 1][y - 1]++;
-                        if(field[x][y - 1] != 9) field[x][y - 1]++;
-                        if(x < size - 1 && field[x + 1][y - 1] != 9) field[x + 1][y - 1]++;
-                    }
+                    field[randX][randY] = 9;
+                    for(int x = randX - 1; x < randX + 2; x++) if(x >= 0 && x < size) for(int y = randY - 1; y <= randY + 1; y++) if(y >= 0 && y < size && field[x][y] != 9) field[x][y]++;
                 }
             }
         }
-        MineSweeper mineSweeper = new MineSweeper();
-        mineSweeper.Derive(field, size, scanner);
+        new MineSweeper(field, size, scanner);
 
         System.out.println("Enter to continue");
         scanner.nextLine();
