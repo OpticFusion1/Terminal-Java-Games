@@ -1,13 +1,14 @@
-public class GridPrint {
+class GridPrint {
     boolean searchLock = true;
     String[][] content;
     String[] column;
     String[] row;
     int selectX = 0;
     int selectY = 0;
+    private Color color = Main.color;
 
-    public void Generate() {
-        System.out.print("\u001B[32m" + "#  ");
+    void Generate() {
+        System.out.print(color.Green + "#  ");
         for(String s : column) System.out.print(s + " ");
         for(int y = 0; y < row.length; y++) {
             System.out.println();
@@ -20,15 +21,15 @@ public class GridPrint {
             }
             if(y == selectY && row.length - 1 == selectX) System.out.print("]");
             else System.out.print(" ");
-            System.out.print("\u001B[32m" + row[y] + "\u001B[0m");
+            System.out.print(color.Green(row[y]));
         }
         System.out.println();
-        System.out.print("\u001B[32m" + "   ");
-        for(String s : column) System.out.print(s + " ");
-        System.out.println("\u001B[0m");
+        System.out.print("   ");
+        for(String s : column) System.out.print(color.Green(s + " "));
+        System.out.println();
     }
 
-    public boolean Select(String cell) {
+    boolean Select(String cell) {
         cell = cell.toLowerCase();
         selectX = 0;
         selectY = 0;
@@ -60,8 +61,7 @@ public class GridPrint {
         return !moving;
     }
 
-    public boolean contains(int x, int y) {
-        if(x >= 0 && x < column.length && y >= 0 && y < row.length) return true;
-        else return false;
+    boolean contains(int x, int y) {
+        return x >= 0 && x < column.length && y >= 0 && y < row.length;
     }
 }
