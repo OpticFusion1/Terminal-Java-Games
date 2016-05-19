@@ -1,7 +1,3 @@
-
-import java.awt.*;
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.Scanner;
 
 class GridPrint {
@@ -10,6 +6,8 @@ class GridPrint {
     String[] row;
     Point select = new Point(0,0);
     Point max;
+    Point min;
+    Point range;
     Point[] cells;
     private Color color = new Color();
 
@@ -19,6 +17,8 @@ class GridPrint {
         row = new String[ySize];
         cells = new Point[xSize * ySize];
         max = new Point(xSize,ySize);
+        min = new Point(0,0);
+        range = max;
         int i = 0;
         for(int x = 0; x < xSize; x++) for(int y = 0; y < ySize; y++) {
             cells[i] = new Point(x,y);
@@ -38,12 +38,12 @@ class GridPrint {
         for(String s : row) if(rowMax < color.length(s)) rowMax = color.length(s);
 
         System.out.print(color.Green + "#" + space(rowMax));
-        for(int x = 0; x < max.x; x++) System.out.print(column[x] + " " + space(columnMax[x] - color.length(column[x])));
+        for(int x = min.x; x < max.x; x++) System.out.print(column[x] + " " + space(columnMax[x] - color.length(column[x])));
 
-        for(int y = 0; y < max.y; y++) {
+        for(int y = min.y; y < max.y; y++) {
             System.out.println();
             System.out.print(color.Green(row[y]) + space(rowMax - color.length(row[y])));
-            for(int x = 0; x < max.x; x++) {
+            for(int x = min.x; x < max.x; x++) {
                 if(y == select.y && x == select.x) System.out.print("[");
                 else if(y == select.y && x > 0 && x == select.x + 1) System.out.print("]");
                 else System.out.print(" ");
@@ -55,12 +55,15 @@ class GridPrint {
         }
         System.out.println();
         System.out.print(color.Green + " " + space(rowMax));
-        for(int x = 0; x < max.x; x++) System.out.print(column[x] + " " + space(columnMax[x] - color.length(column[x])));
+        for(int x = min.x; x < max.x; x++) System.out.print(column[x] + " " + space(columnMax[x] - color.length(column[x])));
         System.out.println(color.Clear);
     }
 
-    boolean Search(String cell) {
-        cell = cell.toLowerCase();
+    boolean Search(Scanner scanner) {
+        System.out.print("Search for Cell:" + color.Green);
+        String cell = scanner.nextLine().toLowerCase();
+        System.out.println(color.Clear);
+
         select.y = 0;
         select.x = 0;
         boolean moving = true;
@@ -75,6 +78,14 @@ class GridPrint {
             if(!row[select.y].toLowerCase().contains(cell.split(" ")[1])) select.y++;
             else moving = false;
         }
+
+        min = new Point(0,0);
+        if(select.x > range.x / 2) min.x = select.x - range.x / 2;
+        if(min.x > column.length - range.x) min.x = column.length - range.x;
+        if(select.y > range.y / 2) min.y = select.y - range.y / 2;
+        if(min.y > row.length - range.y) min.y = row.length - range.y;
+        max = new Point(min.x + range.x, min.y + range.y);
+
         return !moving;
     }
 

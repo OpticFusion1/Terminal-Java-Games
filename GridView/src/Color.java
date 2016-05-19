@@ -8,7 +8,7 @@ class Color {
     String Blue = "\u001B[34m";
     String Purple = "\u001B[35m";
     String Cyan = "\u001B[36m";
-    String White = "\u001B[36m";
+    String White = "\u001B[37m";
 
     String Black(String text) {
         return Black + text + Clear;
@@ -25,9 +25,7 @@ class Color {
     String Blue(String text) {
         return Blue + text + Clear;
     }
-    String Cyan(String text) {
-        return Cyan + text + Clear;
-    }
+    String Cyan(String text) { return Cyan + text + Clear; }
     String Purple(String text) {
         return Purple + text + Clear;
     }

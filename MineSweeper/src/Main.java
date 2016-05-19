@@ -10,7 +10,7 @@ public class Main {
         new MineSweeper(size, scanner);
 
         System.out.println("Press Enter to close" + color.Black);
-        scanner.hasNext();
+        scanner.nextLine();
         scanner.close();
         System.exit(0);
     }

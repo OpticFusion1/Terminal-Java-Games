@@ -1,5 +1,4 @@
 
-import java.awt.*;
 import java.util.*;
 
 class MineSweeper {
@@ -42,10 +41,7 @@ class MineSweeper {
         while(inGame) {
             System.out.println("Remaining spaces:" + (covered - mines));
             SetGrid();
-            System.out.print("Search Cell:" + color.Green);
-            String s = scanner.nextLine();
-            System.out.println(color.Clear);
-            if(gridPrint.Search(s)) NextTurn();
+            if(gridPrint.Search(scanner)) NextTurn();
             else System.out.println(color.Red("Error: try again"));
         }
     }
@@ -72,6 +68,7 @@ class MineSweeper {
             inGame = false;
             SetGrid();
         } else {
+            mineField[gridPrint.select.x][gridPrint.select.y] = i;
             new Sweep(gridPrint.select.x, gridPrint.select.y, false);
             if(covered == mines) {
                 System.out.println(color.Green("  You Win!  "));
