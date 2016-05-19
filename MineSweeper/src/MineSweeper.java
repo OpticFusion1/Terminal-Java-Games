@@ -1,39 +1,44 @@
 
+import java.awt.*;
 import java.util.*;
 
 class MineSweeper {
     private int mines;
     private Color color = Main.color;
     private boolean inGame = true;
-    private GridPrint gridPrint = new GridPrint();
+    private int size;
 
-    static int size;
     static int covered;
     static int[][] mineField;
     static boolean[][]visited;
+    static GridPrint gridPrint;
 
-    MineSweeper(int[][] field, int Size, Scanner scanner) {
+    MineSweeper(int Size, Scanner scanner) {
         size = Size;
-        mines = 0;
-        mineField = field;
+        mines = size * size / 8;
         covered = size * size;
         visited = new boolean[size][size];
+        gridPrint = new GridPrint(size,size);
+        mineField = new int[size][size];
 
-        for(int x = 0; x < size; x++)
-            for(int y = 0; y < size; y++) {
-                if(mineField[x][y] == 9) mines++;
-                mineField[x][y] += 10;
+        for(Point p : gridPrint.cells) mineField[p.x][p.y] = 0;
+        for(int i = 0; i < mines; i++) {
+            boolean unSet = true;
+            while(unSet) {
+                Random rand = new Random();
+                int randX = rand.nextInt(size);
+                int randY = rand.nextInt(size);
+                if(mineField[randX][randY] != 9) {
+                    unSet = false;
+                    mineField[randX][randY] = 9;
+                    for(int x = randX - 1; x < randX + 2; x++) for(int y = randY - 1; y <= randY + 1; y++) if(gridPrint.contains(x,y) && mineField[x][y] != 9) mineField[x][y]++;
+                }
             }
-
-        String[] set = new String[size];
-        for(int i = 0; i < size; i++) set[i] = "" + (char) (i + 65);
-        gridPrint.column = set;
-        set = new String[size];
-        for(int i = 1; i <= size; i++) {
-            if(i > 9) set[i - 1] = "" + i;
-            else set[i - 1] =  i + " ";
         }
-        gridPrint.row = set;
+        for(Point p : gridPrint.cells) {
+                if(MineSweeper.mineField[p.x][p.y] == 9) mines++;
+                MineSweeper.mineField[p.x][p.y] += 10;
+        }
         while(inGame) {
             System.out.println("Remaining spaces:" + (covered - mines));
             SetGrid();
@@ -47,34 +52,31 @@ class MineSweeper {
 
     private void SetGrid() {
         gridPrint.content = new String[size][size];
-        for(int x = 0; x < size; x++)
-            for(int y = 0; y < size; y++) {
-                if(mineField[x][y] == 0) gridPrint.content[x][y] = color.Cyan(".");
-                else if(mineField[x][y] == 9) gridPrint.content[x][y] = color.Red("*");
-                else if(mineField[x][y] > 9) gridPrint.content[x][y] = "_";
-                else gridPrint.content[x][y] = color.Blue("" + mineField[x][y]);
-            }
+        for(Point p : gridPrint.cells){
+                if(mineField[p.x][p.y] == 0) gridPrint.content[p.x][p.y] = color.Cyan(".");
+                else if(mineField[p.x][p.y] == 9) gridPrint.content[p.x][p.y] = color.Red("*");
+                else if(mineField[p.x][p.y] > 9) gridPrint.content[p.x][p.y] = "_";
+                else gridPrint.content[p.x][p.y] = color.Blue("" + mineField[p.x][p.y]);
+        }
         gridPrint.Generate();
     }
 
     private void NextTurn() {
-        int i = mineField[gridPrint.selectX][gridPrint.selectY];
+        int i = mineField[gridPrint.select.x][gridPrint.select.y];
         if(i > 9) i -= 10;
         if(i == 9) {
             System.out.println(color.Red("  You Lose!  "));
             System.out.println();
-            for(int x = 0; x < size; x++) for(int y = 0; y < size; y++) if(mineField[x][y] > 9) mineField[x][y] -= 10;
-            mineField[gridPrint.selectX][gridPrint.selectY] = i;
+            for(Point p : gridPrint.cells) if(mineField[p.x][p.y] > 9) mineField[p.x][p.y] -= 10;
+            mineField[gridPrint.select.x][gridPrint.select.y] = i;
             inGame = false;
             SetGrid();
         } else {
-            mineField[gridPrint.selectX][gridPrint.selectY] -= 10;
-            covered--;
-            new Sweep(gridPrint.selectX, gridPrint.selectY, false);
+            new Sweep(gridPrint.select.x, gridPrint.select.y, false);
             if(covered == mines) {
                 System.out.println(color.Green("  You Win!  "));
                 System.out.println();
-                for(int x = 0; x < size; x++) for(int y = 0; y < size; y++) if(mineField[x][y] > 9) mineField[x][y] -= 10;
+                for(Point p : gridPrint.cells) if(mineField[p.x][p.y] > 9) mineField[p.x][p.y] -= 10;
                 inGame = false;
                 SetGrid();
             }
