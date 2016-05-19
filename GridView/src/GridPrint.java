@@ -1,4 +1,8 @@
+
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.Scanner;
 
 class GridPrint {
     String[][] content;
@@ -55,7 +59,7 @@ class GridPrint {
         System.out.println(color.Clear);
     }
 
-    boolean Select(String cell) {
+    boolean Search(String cell) {
         cell = cell.toLowerCase();
         select.y = 0;
         select.x = 0;

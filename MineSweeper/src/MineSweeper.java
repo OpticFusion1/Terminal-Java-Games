@@ -42,10 +42,10 @@ class MineSweeper {
         while(inGame) {
             System.out.println("Remaining spaces:" + (covered - mines));
             SetGrid();
-            System.out.print("Select Cell:" + color.Green);
+            System.out.print("Search Cell:" + color.Green);
             String s = scanner.nextLine();
             System.out.println(color.Clear);
-            if(gridPrint.Select(s)) NextTurn();
+            if(gridPrint.Search(s)) NextTurn();
             else System.out.println(color.Red("Error: try again"));
         }
     }

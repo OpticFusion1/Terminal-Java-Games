@@ -20,6 +20,7 @@ public class CSVMain {
                 gridPrint.column = firstLine;
                 for(Point p : gridPrint.cells) gridPrint.content[p.x][p.y] = allCells.get(p.y)[p.x];
                 if(args.length > 1) gridPrint.max.x = Integer.valueOf(args[1]);
+                if(args.length > 2) gridPrint.max.y = Integer.valueOf(args[2]);
                 gridPrint.Generate();
             } catch(FileNotFoundException e) {
                 System.out.println(color.Red("Error, no file found"));
