@@ -41,8 +41,8 @@ class MineSweeper {
         while(inGame) {
             System.out.println("Remaining spaces:" + (covered - mines));
             SetGrid();
-            if(gridPrint.Search(scanner)) NextTurn();
-            else System.out.println(color.Red("Error: try again"));
+            gridPrint.Search(scanner);
+            NextTurn();
         }
     }
 
@@ -58,17 +58,17 @@ class MineSweeper {
     }
 
     private void NextTurn() {
-        int i = mineField[gridPrint.select.x][gridPrint.select.y];
-        if(i > 9) i -= 10;
-        if(i == 9) {
+        if(mineField[gridPrint.select.x][gridPrint.select.y] > 9) {
+            mineField[gridPrint.select.x][gridPrint.select.y] -= 10;
+            covered--;
+        }
+        if(mineField[gridPrint.select.x][gridPrint.select.y] == 9) {
             System.out.println(color.Red("  You Lose!  "));
             System.out.println();
             for(Point p : gridPrint.cells) if(mineField[p.x][p.y] > 9) mineField[p.x][p.y] -= 10;
-            mineField[gridPrint.select.x][gridPrint.select.y] = i;
             inGame = false;
             SetGrid();
         } else {
-            mineField[gridPrint.select.x][gridPrint.select.y] = i;
             new Sweep(gridPrint.select.x, gridPrint.select.y, false);
             if(covered == mines) {
                 System.out.println(color.Green("  You Win!  "));

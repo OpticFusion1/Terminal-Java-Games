@@ -32,17 +32,4 @@ class Color {
     String White(String text) {
         return White + text + Clear;
     }
-
-    int length(String text) {
-        if(text.contains(Clear)) text = text.replace(Clear,"");
-        if(text.contains(Black)) text = text.replace(Black,"");
-        if(text.contains(Red)) text = text.replace(Red,"");
-        if(text.contains(Green)) text = text.replace(Green,"");
-        if(text.contains(Yellow)) text = text.replace(Yellow,"");
-        if(text.contains(Blue)) text = text.replace(Blue,"");
-        if(text.contains(Cyan)) text = text.replace(Cyan,"");
-        if(text.contains(Purple)) text = text.replace(Purple,"");
-        if(text.contains(White)) text = text.replace(White,"");
-        return text.length();
-    }
 }

@@ -1,4 +1,4 @@
-public class Point {
+class Point {
     int x;
     int y;
     Point(int newX,int newY) {

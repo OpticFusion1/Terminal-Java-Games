@@ -20,13 +20,12 @@ public class CSVMain {
                 for(Point p : gridPrint.cells) gridPrint.content[p.x][p.y] = allCells.get(p.y)[p.x];
                 if(args.length > 1) gridPrint.range.x = Integer.valueOf(args[1]);
                 if(args.length > 2) gridPrint.range.y = Integer.valueOf(args[2]);
+                gridPrint.Scale();
                 gridPrint.Generate();
                 while(gridPrint.select.x != 1 || gridPrint.select.y != 1) {
-                    if(gridPrint.Search(scanner)) {
-                        System.out.println(gridPrint.select.Print() + " Showing: " + gridPrint.min.Print() + '-' + gridPrint.max.Print());
-                        gridPrint.Generate();
-                    }
-                    else System.out.println(color.Red("Error: try again"));
+                    gridPrint.Search(scanner);
+                    System.out.println(gridPrint.select.Print() + " Showing: " + gridPrint.min.Print() + '-' + gridPrint.max.Print());
+                    gridPrint.Generate();
                 }
             } catch(FileNotFoundException e) {
                 System.out.println(color.Red("Error, no file found"));
