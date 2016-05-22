@@ -3,8 +3,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    static GridPrint gridPrint = new GridPrint(8,8);
-    static int[][] board = new int[8][8];
+    private static GridPrint gridPrint = new GridPrint(8,8);
+    private static int[][] board = new int[8][8];
+    private static Color color = new Color();
     public static void main(String[] args) {
         for(Point p: gridPrint.cells) board[p.x][p.y] = 0;
         for(Point p: gridPrint.cells) {
@@ -56,89 +57,170 @@ public class Main {
             }
         }
         MakeGrid();
+        System.out.println("White's Turn");
+        gridPrint.Generate();
         Scanner scanner = new Scanner(System.in);
         boolean inGame = true;
+        boolean whiteTurn = true;
         while(inGame) {
             boolean empty = true;
             while(empty) {
                 gridPrint.Search(scanner);
-                if(board[gridPrint.select.x][gridPrint.select.y] > 0) empty = false;
+                if(board[gridPrint.select.x][gridPrint.select.y] > 0) {
+                    if((!whiteTurn && board[gridPrint.select.x][gridPrint.select.y] > 6) || (whiteTurn && board[gridPrint.select.x][gridPrint.select.y] < 7)) empty = false;
+                    else System.out.print(color.Red("Wrong side"));
+                } else System.out.print(color.Red("No piece there"));
             }
+            MakeGrid();
+            Point current = new Point(gridPrint.select.x,gridPrint.select.y);
             List<Point> moves = FindMoves();
+            for(Point p : moves) {
+                if(gridPrint.content[p.x][p.y].contains(color.Red)) gridPrint.content[p.x][p.y] = gridPrint.content[p.x][p.y].replace(color.Red,color.Green);
+                else gridPrint.content[p.x][p.y] = color.Green(gridPrint.content[p.x][p.y]);
+            }
+            gridPrint.Generate();
+
+            if(moves.size() > 0) {
+                boolean legalMove = false;
+                while(!legalMove) {
+                    gridPrint.Search(scanner);
+                    for(Point p : moves) if(p.x == gridPrint.select.x && p.y == gridPrint.select.y) legalMove = true;
+                    if(!legalMove) System.out.println(color.Red("Not legal move"));
+                }
+                board[gridPrint.select.x][gridPrint.select.y] = board[current.x][current.y];
+                if(board[gridPrint.select.x][gridPrint.select.y] == 1 || board[gridPrint.select.x][gridPrint.select.y] == 7) inGame = false;
+                board[current.x][current.y] = 0;
+
+                if(!whiteTurn) {
+                    if(inGame) {
+                        System.out.println("White's Turn");
+                        whiteTurn = true;
+                    } else System.out.println("  Red Wins!  ");
+                } else {
+                    if(inGame) {
+                        System.out.println(color.Red("Red's Turn"));
+                        whiteTurn = false;
+                    } else System.out.println("  White Wins!  ");
+                }
+            } else System.out.println(color.Red("No legal moves"));
+            if(inGame) {
+                MakeGrid();
+                gridPrint.Generate();
+            }
         }
 
+        System.out.println("Press Enter to close" + color.Black);
+        scanner.nextLine();
+        scanner.close();
+        System.exit(0);
     }
     private static List<Point> FindMoves() {
         List<Point> moves = new ArrayList<>();
         boolean white = true;
-        int x = 0;
-        int y = 0;
-        if(board[gridPrint.select.x][gridPrint.select.y] > 7) white = false;
+        boolean moving = true;
+        int x = gridPrint.select.x;
+        int y = gridPrint.select.y;
+        int dir = 1;
+        if(board[gridPrint.select.x][gridPrint.select.y] > 6) white = false;
         switch(board[gridPrint.select.x][gridPrint.select.y]) {
             case 1:case 7:
-                for(x = gridPrint.select.x - 1; x < gridPrint.select.x + 1; x++) for(y = gridPrint.select.y - 1; y < gridPrint.select.y + 1; y++) moves.add(new Point(x,y));
+                while(dir != 0) {
+                    moves.add(new Point(x + dir,y + dir));
+                    moves.add(new Point(x - dir,y + dir));
+                    moves.add(new Point(x + dir,y));
+                    moves.add(new Point(x,y + dir));
+                    if(dir == 1) dir = -1;
+                    else dir = 0;
+                }
                 break;
             case 2:case 8:case 3:case 9:
-                x = gridPrint.select.x;
-                while(board[x][gridPrint.select.y] == 0) {
-                    x++;
-                    moves.add(new Point(x,gridPrint.select.y));
+                while(dir != 0) {
+                    while(gridPrint.contains(x,y) && moving) {
+                        x += dir;
+                        moves.add(new Point(x,y));
+                        if(gridPrint.contains(x,y) && board[x][y] != 0) moving = false;
+                    }
+                    x = gridPrint.select.x;
+                    moving = true;
+                    while(gridPrint.contains(x,y) && moving) {
+                        y += dir;
+                        moves.add(new Point(x,y));
+                        if(gridPrint.contains(x,y) && board[x][y] != 0) moving = false;
+                    }
+                    y = gridPrint.select.y;
+                    moving = true;
+                    if(dir == 1) dir = -1;
+                    else dir = 0;
                 }
-                x = gridPrint.select.x;
-                while(board[x][gridPrint.select.y] == 0) {
-                    x--;
-                    moves.add(new Point(x,gridPrint.select.y));
-                }
-
-                y = gridPrint.select.y;
-                while(board[gridPrint.select.x][y] == 0) {
-                    y++;
-                    moves.add(new Point(gridPrint.select.x,y));
-                }
-                y = gridPrint.select.y;
-                while(board[gridPrint.select.x][y] == 0) {
-                    y--;
-                    moves.add(new Point(gridPrint.select.x,y));
-                }
+                dir = 1;
                 if(board[gridPrint.select.x][gridPrint.select.y] == 3 || board[gridPrint.select.x][gridPrint.select.y] == 9) break;
             case 4:case 10:
-                x = gridPrint.select.x;
-                y = gridPrint.select.y;
-                while(board[x][y] == 0) {
-                    x++;
-                    y++;
-                    moves.add(new Point(x,y));
-                }
-                x = gridPrint.select.x;
-                y = gridPrint.select.y;
-                while(board[x][y] == 0) {
-                    x--;
-                    y++;
-                    moves.add(new Point(x,y));
-                }
-                x = gridPrint.select.x;
-                y = gridPrint.select.y;
-                while(board[x][y] == 0) {
-                    x++;
-                    y--;
-                    moves.add(new Point(x,y));
-                }
-                x = gridPrint.select.x;
-                y = gridPrint.select.y;
-                while(board[x][y] == 0) {
-                    x--;
-                    y--;
-                    moves.add(new Point(x,y));
+                while(dir != 0) {
+                    while(gridPrint.contains(x,y) && moving) {
+                        x += dir;
+                        y += dir;
+                        moves.add(new Point(x,y));
+                        if(gridPrint.contains(x,y) && board[x][y] != 0) moving = false;
+                    }
+                    x = gridPrint.select.x;
+                    y = gridPrint.select.y;
+                    moving = true;
+                    while(gridPrint.contains(x,y) && moving) {
+                        x -= dir;
+                        y += dir;
+                        moves.add(new Point(x,y));
+                        if(gridPrint.contains(x,y) && board[x][y] != 0) moving = false;
+                    }
+                    x = gridPrint.select.x;
+                    y = gridPrint.select.y;
+                    moving = true;
+                    if(dir == 1) dir = -1;
+                    else dir = 0;
                 }
                 break;
             case 11:case 5:
+                while(dir != 0) {
+                    moves.add(new Point(gridPrint.select.x + 2 * dir,gridPrint.select.y + dir));
+                    moves.add(new Point(gridPrint.select.x + 2 * dir,gridPrint.select.y - dir));
+                    moves.add(new Point(gridPrint.select.x + dir,gridPrint.select.y + 2 * dir));
+                    moves.add(new Point(gridPrint.select.x - dir,gridPrint.select.y + 2 * dir));
+                    if(dir == 1) dir = -1;
+                    else dir = 0;
+                }
                 break;
-
+            case 12:case 6:
+                if(white) {
+                    if(y == 1) moves.add(new Point(x, y + 2));
+                    moves.add(new Point(x, y + 1));
+                    while(dir != 0) {
+                        if(gridPrint.contains(x + dir,y + 1) && board[x + dir][y + 1] != 0) moves.add(new Point(x + dir, y + 1));
+                        if(dir == 1) dir = -1;
+                        else dir = 0;
+                    }
+                } else {
+                    if(y == 6) moves.add(new Point(x,y - 2));
+                    moves.add(new Point(x, y - 1));
+                    while(dir != 0) {
+                        if(gridPrint.contains(x + dir,y - 1) && board[x + dir][y - 1] != 0) moves.add(new Point(x + dir,y - 1));
+                        if(dir == 1) dir = -1;
+                        else dir = 0;
+                    }
+                }
+                break;
         }
+        List<Point> remove = new ArrayList<>();
+        for(Point p : moves) {
+            if(!gridPrint.contains(p.x,p.y)) remove.add(p);
+            else {
+                if(white && board[p.x][p.y] < 7 && board[p.x][p.y] != 0) remove.add(p);
+                if(!white && board[p.x][p.y] > 6) remove.add(p);
+                if(p.x == gridPrint.select.x && p.y == gridPrint.select.y) remove.add(p);
+            }
+        }
+        moves.removeAll(remove);
         return moves;
     }
     private static void MakeGrid() {
-        Color color = new Color();
         for(Point p: gridPrint.cells) {
             switch(board[p.x][p.y]) {
                 case 0:
@@ -195,6 +277,5 @@ public class Main {
                     break;
             }
         }
-        gridPrint.Generate();
     }
 }
