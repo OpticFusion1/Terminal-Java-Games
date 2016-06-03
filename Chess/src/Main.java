@@ -6,7 +6,15 @@ public class Main {
     private static GridPrint gridPrint = new GridPrint(8,8);
     private static int[][] board = new int[8][8];
     private static Color color = new Color();
+
     public static void main(String[] args) {
+        boolean quantum = false;
+        if(args.length > 0 && args[0].toUpperCase().equals("-Q")) {
+            quantum = true;
+            System.out.println(color.Purple("Quantum mode activated"));
+        }
+
+        //Create game board
         for(Point p: gridPrint.cells) board[p.x][p.y] = 0;
         for(Point p: gridPrint.cells) {
             switch(p.y) {
@@ -57,13 +65,16 @@ public class Main {
             }
         }
         MakeGrid();
-        System.out.println("White's Turn");
+        //Set up game play
+        System.out.println("Red's Turn");
         gridPrint.Generate();
         Scanner scanner = new Scanner(System.in);
         boolean inGame = true;
-        boolean whiteTurn = true;
+        boolean whiteTurn = false;
+        //Run game
         while(inGame) {
             boolean empty = true;
+            //Choose piece to move
             while(empty) {
                 gridPrint.Search(scanner);
                 if(board[gridPrint.select.x][gridPrint.select.y] > 0) {
@@ -72,6 +83,7 @@ public class Main {
                 } else System.out.print(color.Red("No piece there"));
             }
             MakeGrid();
+            //Show all possible moves
             Point current = new Point(gridPrint.select.x,gridPrint.select.y);
             List<Point> moves = FindMoves();
             for(Point p : moves) {
@@ -82,15 +94,24 @@ public class Main {
 
             if(moves.size() > 0) {
                 boolean legalMove = false;
+                //Choose where to move
                 while(!legalMove) {
                     gridPrint.Search(scanner);
                     for(Point p : moves) if(p.x == gridPrint.select.x && p.y == gridPrint.select.y) legalMove = true;
                     if(!legalMove) System.out.println(color.Red("Not legal move"));
                 }
-                board[gridPrint.select.x][gridPrint.select.y] = board[current.x][current.y];
+                //Check if end of game
                 if(board[gridPrint.select.x][gridPrint.select.y] == 1 || board[gridPrint.select.x][gridPrint.select.y] == 7) inGame = false;
+                //Relocate piece
+                board[gridPrint.select.x][gridPrint.select.y] = board[current.x][current.y];
+                if(quantum) {
+                    board[gridPrint.select.x][gridPrint.select.y]--;
+                    if(board[gridPrint.select.x][gridPrint.select.y] == 1) board[gridPrint.select.x][gridPrint.select.y] = 6;
+                    if(board[gridPrint.select.x][gridPrint.select.y] == 7) board[gridPrint.select.x][gridPrint.select.y] = 11;
+                }
                 board[current.x][current.y] = 0;
 
+                //Check who's turn
                 if(!whiteTurn) {
                     if(inGame) {
                         System.out.println("White's Turn");
@@ -103,12 +124,14 @@ public class Main {
                     } else System.out.println("  White Wins!  ");
                 }
             } else System.out.println(color.Red("No legal moves"));
+            //Display game board
             if(inGame) {
                 MakeGrid();
                 gridPrint.Generate();
             }
         }
 
+        //Pause until close
         System.out.println("Press Enter to close" + color.Black);
         scanner.nextLine();
         scanner.close();
