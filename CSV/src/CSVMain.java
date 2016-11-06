@@ -10,7 +10,22 @@ public class CSVMain {
         Color color = new Color();
         //Locating chosen file
         if(args.length > 0) {
-            File file = new File(args[0]);
+            String path = args[0];
+            if(args[0].equals("-Q")) {
+                path = "";
+                boolean moving = false;
+                boolean space = false;
+                for(String s : args) {
+                    if(moving && !s.equals("-Q")) {
+                        if(space) path += " ";
+                        path += s;
+                        space = true;
+                    }
+                    else if(s.equals("-Q") && !moving) moving = true;
+                    else if(s.equals("-Q") && moving) moving = false;
+                }
+            }
+            File file = new File(path);
             try {
                 Scanner fileScanner = new Scanner(file);
                 //Read other lines
@@ -18,11 +33,11 @@ public class CSVMain {
                 while(fileScanner.hasNextLine()) allCells.add(fileScanner.nextLine().split(","));
                 //Limit grid size
                 Point range = new Point(0,0);
-                if(args.length > 1) range.x = Integer.valueOf(args[1]);
-                if(args.length > 2) range.y = Integer.valueOf(args[2]);
+                //if(args.length > 1) range.x = Integer.valueOf(args[1]);
+                //if(args.length > 2) range.y = Integer.valueOf(args[2]);
                 ShowFile(allCells,range);
             } catch(FileNotFoundException e) {
-                System.out.println(color.Red("Error, no file found"));
+                System.out.println(color.Red("Error, no file found at: " + path));
             }
         } else System.out.println(color.Red("Error, no file chosen"));
 
@@ -36,9 +51,8 @@ public class CSVMain {
         //Creating display grid
         GridPrint gridPrint = new GridPrint(allCells.get(0).length - 1, allCells.size() - 1);
         for(Point p : gridPrint.cells) {
-            if(p.y == 0 && p.x + 1 < allCells.get(0).length) gridPrint.column[p.x] = allCells.get(0)[p.x + 1];
-            if(p.x == 0 && p.y + 1 < allCells.size()) gridPrint.row[p.y] = allCells.get(p.y + 1)[0];
-            if(p.y + 1 < allCells.size() && p.x + 1 < allCells.get(0).length) gridPrint.content[p.x][p.y] = allCells.get(p.y + 1)[p.x + 1];
+            if(p.y == 0 && p.x + 1 < allCells.get(0).length) gridPrint.column[p.x] = allCells.get(0)[p.x];
+            if(p.y + 1 < allCells.size()) gridPrint.content[p.x][p.y] = allCells.get(p.y + 1)[p.x];
         }
         //Set range
         boolean zoomed = false;
