@@ -15,8 +15,8 @@ public class Main {
         }
 
         //Create game board
-        for(Point p: gridPrint.cells) board[p.x][p.y] = 0;
         for(Point p: gridPrint.cells) {
+            board[p.x][p.y] = 0;
             switch(p.y) {
                 case 0:
                     switch(p.x) {
@@ -65,12 +65,14 @@ public class Main {
             }
         }
         MakeGrid();
+
         //Set up game play
         System.out.println("Red's Turn");
         gridPrint.Generate();
         Scanner scanner = new Scanner(System.in);
         boolean inGame = true;
         boolean whiteTurn = false;
+
         //Run game
         while(inGame) {
             boolean empty = true;
@@ -83,6 +85,7 @@ public class Main {
                 } else System.out.print(color.Red("No piece there"));
             }
             MakeGrid();
+
             //Show all possible moves
             Point current = new Point(gridPrint.select.x,gridPrint.select.y);
             List<Point> moves = FindMoves();
@@ -104,6 +107,7 @@ public class Main {
                 if(board[gridPrint.select.x][gridPrint.select.y] == 1 || board[gridPrint.select.x][gridPrint.select.y] == 7) inGame = false;
                 //Relocate piece
                 board[gridPrint.select.x][gridPrint.select.y] = board[current.x][current.y];
+
                 if(quantum) {
                     board[gridPrint.select.x][gridPrint.select.y]--;
                     if(board[gridPrint.select.x][gridPrint.select.y] == 1) board[gridPrint.select.x][gridPrint.select.y] = 6;
@@ -145,6 +149,7 @@ public class Main {
         int y = gridPrint.select.y;
         int dir = 1;
         if(board[gridPrint.select.x][gridPrint.select.y] > 6) white = false;
+
         switch(board[gridPrint.select.x][gridPrint.select.y]) {
             case 1:case 7:
                 while(dir != 0) {
@@ -231,6 +236,7 @@ public class Main {
                 }
                 break;
         }
+
         List<Point> remove = new ArrayList<>();
         for(Point p : moves) {
             if(!gridPrint.contains(p.x,p.y)) remove.add(p);

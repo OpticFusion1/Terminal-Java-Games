@@ -7,6 +7,8 @@ class MineSweeper {
     private boolean inGame = true;
     private int size;
 
+
+
     static int covered;
     static int[][] mineField;
     static boolean[][]visited;
