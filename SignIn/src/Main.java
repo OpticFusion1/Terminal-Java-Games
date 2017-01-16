@@ -17,11 +17,12 @@ public class Main {
         System.out.println(dateFormat.format(date));
 
         //Load Roster
-        File roster = new File("Roster.csv");
+        File roster = new File("Roster");
         try {
             Scanner scanner = new Scanner(roster);
-            while(scanner.hasNextLine()) {
-                String[] string = scanner.nextLine().split(",");
+            String[] file = encrypt(scanner.nextLine(),-5).split("\n");
+            for(String line : file) {
+                String[] string = line.split(",");
                 all.add(new Student(string[0]));
                 id.add(Integer.valueOf(string[1]));
             }
@@ -53,7 +54,7 @@ public class Main {
                     System.out.println(color.Red("No student found: enter full name"));
                     Student student = new Student(scanner.nextLine());
                     student.check();
-                    if(student.name.length() > 5) {
+                    if(student.name.length() > 3) {
                         //Add student to lists
                         all.add(student);
                         id.add(find);
@@ -71,7 +72,7 @@ public class Main {
                     if(newStudent) {
                         //Update student roster
                         writer = new FileWriter(roster);
-                        for(int i = 0; i < all.size(); i++) writer.write(all.get(i).name + ',' + id.get(i) + "\n");
+                        for(int i = 0; i < all.size(); i++) writer.write(encrypt(all.get(i).name + ',' + id.get(i) + "\n",5));
                         writer.close();
                         System.out.println(color.Green("Roster Updated"));
                         newStudent = false;
@@ -84,5 +85,12 @@ public class Main {
                 scanner.nextLine();
             }
         }
+    }
+
+    private static String encrypt(String string, int degree) {
+        char[] line = string.toCharArray();
+        string = "";
+        for(char c : line) string += (char)(c + degree);
+        return string;
     }
 }
