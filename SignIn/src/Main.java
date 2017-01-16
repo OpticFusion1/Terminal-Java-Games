@@ -5,14 +5,14 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Main {
-    static Color color = new Color();
-    static List<Student> all = new ArrayList<>();
-    static List<Integer> id = new ArrayList<>();
+    private static Color color = new Color();
+    private static List<Student> all = new ArrayList<>();
+    private static List<Integer> id = new ArrayList<>();
 
     public static void main(String[] args) {
         //Startup
-        System.out.println(color.Purple("Robotics Auto Sign-in System"));
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        System.out.println(color.Yellow("Robotics Auto Sign-in System"));
+        DateFormat dateFormat = new SimpleDateFormat("MM.dd");
         Date date = new Date();
         System.out.println(dateFormat.format(date));
 
@@ -33,13 +33,13 @@ public class Main {
 
         //Prepare outputs
         Scanner scanner = new Scanner(System.in);
-        File attendance = new File(dateFormat.format(date) +" Attendance.csv");
+        File attendance = new File("Attendance " + dateFormat.format(date) + ".csv");
         boolean newStudent = false;
 
 
         while(true) {
             //Get ID
-            System.out.println(color.Blue + "Scan card and press enter" + color.Black);
+            System.out.println("Scan card and press enter" + color.Blue);
             try {
                 int find = scanner.nextInt();
                 scanner.nextLine();
@@ -77,6 +77,7 @@ public class Main {
                         newStudent = false;
                     }
                 } catch(IOException e) {
+                    System.out.println(color.Red("Output Error: " + e));
                 }
             } catch(InputMismatchException e) {
                 System.out.println(color.Red("Error: NAN"));
