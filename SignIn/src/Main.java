@@ -5,13 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Main {
-    private static Color color = new Color();
     private static List<Student> all = new ArrayList<>();
     private static List<Integer> id = new ArrayList<>();
 
     public static void main(String[] args) {
         //Startup
-        System.out.println(color.Yellow("Robotics Auto Sign-in System"));
+        System.out.println("Robotics Auto Sign-in System");
         DateFormat dateFormat = new SimpleDateFormat("MM.dd");
         Date date = new Date();
         System.out.println(dateFormat.format(date));
@@ -29,7 +28,7 @@ public class Main {
             scanner.close();
             System.out.println("Roster Loaded");
         } catch(FileNotFoundException e) {
-            System.out.println(color.Red("No Roster Found"));
+            System.out.println("No Roster Found");
         }
 
         //Prepare outputs
@@ -40,18 +39,18 @@ public class Main {
 
         while(true) {
             //Get ID
-            System.out.println("Scan card and press enter" + color.Blue);
+            System.out.println("Scan Card");
             try {
                 int find = scanner.nextInt();
                 scanner.nextLine();
                 //Locate student
                 if(id.contains(find)) {
                     Student student = all.get(id.indexOf(find));
-                    if(student.check()) System.out.println(color.Green("Welcome, " + student.name));
-                    else System.out.println(color.Green("Goodbye, " + student.name));
+                    if(student.check()) System.out.println("Welcome, " + student.name);
+                    else System.out.println("Goodbye, " + student.name);
                 } else {
                     //Set up new student
-                    System.out.println(color.Red("No student found: enter full name"));
+                    System.out.println("Enter full name");
                     Student student = new Student(scanner.nextLine());
                     student.check();
                     if(student.name.length() > 3) {
@@ -59,7 +58,7 @@ public class Main {
                         all.add(student);
                         id.add(find);
                         newStudent = true;
-                    } else System.out.println(color.Red("Cancelled"));
+                    } else System.out.println("Cancelled");
                 }
 
                 try {
@@ -74,14 +73,14 @@ public class Main {
                         writer = new FileWriter(roster);
                         for(int i = 0; i < all.size(); i++) writer.write(encrypt(all.get(i).name + ',' + id.get(i) + "\n",5));
                         writer.close();
-                        System.out.println(color.Green("Roster Updated"));
+                        System.out.println("Roster Updated");
                         newStudent = false;
                     }
                 } catch(IOException e) {
-                    System.out.println(color.Red("Output Error: " + e));
+                    System.out.println("Output Error: " + e);
                 }
             } catch(InputMismatchException e) {
-                System.out.println(color.Red("Error: NAN"));
+                System.out.println("Error: NAN");
                 scanner.nextLine();
             }
         }
