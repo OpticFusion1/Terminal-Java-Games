@@ -15,11 +15,12 @@ public class Main {
         Date date = new Date();
         System.out.println(dateFormat.format(date));
 
-        //Load Roster
+        //Load Roster <--
         File roster = new File("Roster");
         try {
             Scanner scanner = new Scanner(roster);
             String[] file = encrypt(scanner.nextLine(),-5).split("\n");
+            //For each line
             for(String line : file) {
                 String[] string = line.split(",");
                 all.add(new Student(string[0]));
@@ -62,7 +63,7 @@ public class Main {
                 }
 
                 try {
-                    //Update Attendance sheet
+                    //Update Attendance sheet <--
                     FileWriter writer = new FileWriter(attendance);
                     writer.write("Name,Arrival,Departure,\n");
                     for(Student student : all) writer.write(student.print() + "\n");
