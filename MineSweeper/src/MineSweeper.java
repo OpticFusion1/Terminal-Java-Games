@@ -8,7 +8,6 @@ class MineSweeper {
     private int size;
 
 
-
     static int covered;
     static int[][] mineField;
     static boolean[][]visited;
@@ -17,7 +16,7 @@ class MineSweeper {
     MineSweeper(int Size, Scanner scanner) {
         size = Size;
         mines = size * size / 8;
-        covered = size * size;
+        covered = size * size - mines;
         visited = new boolean[size][size];
         gridPrint = new GridPrint(size,size);
         mineField = new int[size][size];
@@ -41,7 +40,7 @@ class MineSweeper {
                 MineSweeper.mineField[p.x][p.y] += 10;
         }
         while(inGame) {
-            System.out.println("Remaining spaces:" + (covered - mines));
+            System.out.println("Remaining spaces:" + covered);
             SetGrid();
             gridPrint.Search(scanner);
             NextTurn();
@@ -72,7 +71,7 @@ class MineSweeper {
             SetGrid();
         } else {
             new Sweep(gridPrint.select.x, gridPrint.select.y, false);
-            if(covered == mines) {
+            if(covered <= 0) {
                 System.out.println(color.Green("  You Win!  "));
                 System.out.println();
                 for(Point p : gridPrint.cells) if(mineField[p.x][p.y] > 9) mineField[p.x][p.y] -= 10;
