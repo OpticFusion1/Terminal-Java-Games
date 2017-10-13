@@ -15,8 +15,7 @@ fun main(args: Array<String>) {
 
 private fun debug() {
     println()
-    while(Game.changed.size > 0) {
-        val p = Game.changed.poll()
+    for(p in Game.changed) {
         println(Game.get(p).debug())
     }
 }
@@ -25,7 +24,7 @@ private fun input() {
     val line = readLine()?.split(" ")
     if(line != null) {
         val p = Point(line[0].toInt(), line[1].toInt())
-        Game.rules.select(p)
+        Game.select(p)
     }
 }
 

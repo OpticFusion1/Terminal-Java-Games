@@ -4,25 +4,31 @@ import java.util.*;
 
 public class Game {
     public static Place[][] board;
-    public static Queue<Point> changed;
+    public static List<Point> changed;
     public static List<Point> allPoints;
     public static Rules rules;
+    static int size;
 
     public static boolean redTurn;
     public static boolean inPlay = true;
 
     public static Place get(Point point) {
-        return Game.board[point.getX()][point.getY()];
+        if(point.inSquare(size))
+            return Game.board[point.getY()][point.getX()];
+        return new Place(new Point(), ' ');
     }
 
     public static void setup(int size) {
+        //Initialize list variables
         board = new Place[size][size];
-        changed = new ArrayDeque<>();
-
+        changed = new ArrayList<>();
         allPoints = new ArrayList<>();
+        Game.size = size;
+
+        //Set up main grid
         for(int x = 0; x < size; x++) {
             for(int y = 0; y < size; y++) {
-                board[x][y] = new Place(new Point(x, y), ' ');
+                board[y][x] = new Place(new Point(x, y), ' ');
                 allPoints.add(new Point(x, y));
             }
         }
@@ -30,9 +36,13 @@ public class Game {
         rules.setup();
     }
 
-    public static void select(Point point) {
+    public static boolean select(Point point) {
         if(point != null) {
-            Game.get(point).getAction().run();
+            //Run selected action
+            Action a = Game.get(point).getAction();
+            rules.clear();
+            return a.run();
         }
+        return false;
     }
 }

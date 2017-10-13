@@ -11,6 +11,7 @@ internal class Actions {
 
         override fun run(): Boolean {
             if(place.red == Game.redTurn) {
+                Game.rules.clear()
                 var out = false
 
                 //Move toward white
@@ -34,20 +35,25 @@ internal class Actions {
             val mid = p.add(dir)
             var out = false
 
-            if(Game.get(mid).empty) if(!a) {
-                //If spot available
-                val place = Game.get(mid)
-                place.action = Move(p, mid)
-                place.color = 'g'
-                place.change()
-                out = true
+            if(Game.get(mid).empty) {
+                if(!a) {
+                    //Show place to move
+                    val place = Game.get(mid)
+                    place.action = Move(p, mid)
+                    place.color = 'g'
+                    place.type = '_'
+                    place.change()
+                    out = true
+                }
             } else if(Game.get(mid).red != place.red) {
                 //Check if open to jump
-                val end = mid.add(p)
+                val end = mid.add(dir)
                 if(Game.get(end).empty) {
+                    //Show place of jump
                     val place = Game.get(end)
                     place.action = Jump(p, end, mid)
                     place.color = 'g'
+                    place.type = '_'
                     place.change()
                     out = true
                 }
@@ -58,6 +64,7 @@ internal class Actions {
 
     class Move(base: Point, target: Point) : Action(base, target) {
         override fun run(): Boolean {
+            //Move piece to new location
             Game.get(base).move(target)
             Game.get(target).action = Select(target)
             Actions().end(target)

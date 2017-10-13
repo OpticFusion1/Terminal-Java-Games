@@ -1,6 +1,5 @@
 package gameloader.minesweeper
 
-import gameloader.Point
 import gameloader.Rules
 
 class Minesweeper(): Rules {
@@ -10,7 +9,7 @@ class Minesweeper(): Rules {
 
     }
 
-    override fun select(p: Point?) {
+    override fun clear() {
 
     }
 }

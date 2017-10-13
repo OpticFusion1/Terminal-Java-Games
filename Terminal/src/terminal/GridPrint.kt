@@ -8,7 +8,7 @@ fun main(args: Array<String>) {
 
     while(Game.inPlay) {
         display()
-        println(Game.redTurn)
+        println(if(Game.redTurn) "Red's turn" else "White's turn")
         input()
     }
 
@@ -42,9 +42,13 @@ private fun display() {
 }
 
 private fun input() {
-    val line = readLine()?.split(" ")
-    if(line != null) {
-        val p = Point(line[0].toInt(), line[1].toInt())
-        Game.rules.select(p)
+    var found = false
+    while(!found) {
+        val line = readLine()?.split(" ")
+        if(line != null) {
+            val p = Point(line[0].toInt(), line[1].toInt())
+            found = Game.select(p)
+        }
+        if(!found) println("Error: try again")
     }
 }

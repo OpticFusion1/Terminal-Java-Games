@@ -10,10 +10,10 @@ class Checkers : Rules {
 
     override fun setup() {
         for(p in Game.allPoints) {
-            val place = Game.get(p)
+            var place = Game.get(p)
 
             //Set each square
-            Game.board[p.x][p.y] = when {
+            place = when {
                 (p.x + p.y) % 2 == 0 -> place.set(' ', false, 'w')
                 p.y < 3 -> place.set('C', false, 'b')
                 p.y > 4 -> place.set('C', true, 'b')
@@ -24,7 +24,18 @@ class Checkers : Rules {
         }
     }
 
-    override fun select(point: Point?) {
-
+    override fun clear() {
+        for(p in Game.changed) {
+            val place = Game.get(p)
+            if(place.color == 'g') {
+                //Reset square to blank
+                place.action = Actions.Select(p)
+                place.type = ' '
+                place.color = when((p.x + p.y) % 2) {
+                    0 -> 'w'
+                    else -> 'b'
+                }
+            }
+        }
     }
 }
