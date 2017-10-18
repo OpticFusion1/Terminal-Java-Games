@@ -14,7 +14,7 @@ class Place(val point: Point, var color: Char) {
         this.red = red
 
         if(color != ' ') this.color = color
-        empty = type == ' '
+        empty = type == ' ' || type == '_'
 
         change()
         return this
@@ -22,20 +22,22 @@ class Place(val point: Point, var color: Char) {
 
     fun move(next: Point) {
         //Move to new place
-        Game.get(next).set(type, red)
+        Game.get(next).set(type, red, color)
         remove()
     }
 
-    fun remove() {
-        type = ' '
-        empty = true
+    fun remove(): Place {
+        Game.rules.remove(this)
+
         empty = true
         action = None()
         change()
+        return this
     }
 
     fun change() {
-        Game.changed.add(point)
+        if(!Game.lockChanges)
+            Game.changed.add(point)
     }
 
     fun debug(): String {

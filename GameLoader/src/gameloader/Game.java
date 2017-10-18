@@ -11,6 +11,7 @@ public class Game {
 
     public static boolean redTurn;
     public static boolean inPlay = true;
+    public static boolean lockChanges = true;
 
     public static Place get(Point point) {
         if(point.inSquare(size))

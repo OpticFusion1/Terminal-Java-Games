@@ -67,6 +67,7 @@ internal class Actions {
             //Move piece to new location
             Game.get(base).move(target)
             Game.get(target).action = Select(target)
+
             Actions().end(target)
             return true
         }
@@ -77,7 +78,8 @@ internal class Actions {
             Game.get(base).move(target)
             Game.get(remove).remove()
             Game.get(target).action = Select(target)
-            if(Select(target, true).run()) return false
+
+            if(Select(target, true).run()) Game.redTurn != Game.redTurn
             Actions().end(target)
             return true
         }

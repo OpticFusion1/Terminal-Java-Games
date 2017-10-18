@@ -8,7 +8,7 @@ fun main(args: Array<String>) {
 
     while(Game.inPlay) {
         display()
-        println(if(Game.redTurn) "Red's turn" else "White's turn")
+        println(if(Game.redTurn) Color.red("Red's turn") else Color.white("White's turn"))
         input()
     }
 
@@ -18,27 +18,34 @@ private fun display() {
     val board = Game.board
     var all = "  "
 
-    for(i in 0 until board.size)
-        all += "$i "
+    fun columns() {
+        all += Color.BLUE + "\n  "
+        for(i in 0 until board.size)
+            all += "$i "
+        all += Color.CLEAR
+    }
+
+    columns()
 
     var i = 0
     for(row: Array<Place> in board) {
-        all += "\n$i "
+        all += Color.blue("\n$i ")
 
         for(place in row) {
-            val c = place.type
-            all += "$c "
+            val t = place.type
+            val c = place.color
+
+            all += Color.color("$t ", c)
         }
 
-        all += "$i"
+        all += Color.blue("$i")
         i++
     }
 
-    all += "\n  "
-    for(i in 0 until board.size)
-        all += "$i "
-
+    columns()
     println(all)
+
+
 }
 
 private fun input() {
@@ -49,6 +56,6 @@ private fun input() {
             val p = Point(line[0].toInt(), line[1].toInt())
             found = Game.select(p)
         }
-        if(!found) println("Error: try again")
+        if(!found) println(Color.red("Error: try again"))
     }
 }

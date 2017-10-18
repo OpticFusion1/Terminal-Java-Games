@@ -1,8 +1,6 @@
 package gameloader.checkers
 
-import gameloader.Game
-import gameloader.Point
-import gameloader.Rules
+import gameloader.*
 
 class Checkers : Rules {
 
@@ -14,28 +12,35 @@ class Checkers : Rules {
 
             //Set each square
             place = when {
-                (p.x + p.y) % 2 == 0 -> place.set(' ', false, 'w')
-                p.y < 3 -> place.set('C', false, 'b')
-                p.y > 4 -> place.set('C', true, 'b')
-                else -> place.set(' ', true, 'b')
+                (p.x + p.y) % 2 == 0 -> place
+                p.y < 3 -> place.set('C', false, 'w')
+                p.y > 4 -> place.set('C', true, 'r')
+                else -> place.set('_', true, 'b')
             }
 
             if(!place.empty) place.action = Actions.Select(p)
         }
+
+        Game.lockChanges = false
     }
 
     override fun clear() {
+        Game.lockChanges = true
+
         for(p in Game.changed) {
             val place = Game.get(p)
             if(place.color == 'g') {
                 //Reset square to blank
                 place.action = Actions.Select(p)
-                place.type = ' '
-                place.color = when((p.x + p.y) % 2) {
-                    0 -> 'w'
-                    else -> 'b'
-                }
+                place.remove()
             }
         }
+
+        Game.lockChanges = false
+    }
+
+    override fun remove(place: Place) {
+        place.type = '_'
+        place.color = 'b'
     }
 }

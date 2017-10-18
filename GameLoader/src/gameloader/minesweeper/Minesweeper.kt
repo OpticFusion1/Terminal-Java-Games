@@ -1,5 +1,6 @@
 package gameloader.minesweeper
 
+import gameloader.Place
 import gameloader.Rules
 
 class Minesweeper(): Rules {
@@ -10,6 +11,10 @@ class Minesweeper(): Rules {
     }
 
     override fun clear() {
+
+    }
+
+    override fun remove(place: Place?) {
 
     }
 }
