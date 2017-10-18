@@ -7,6 +7,7 @@ fun main(args: Array<String>) {
     Game.setup(8)
 
     while(Game.inPlay) {
+        Color.reset()
         display()
         println(if(Game.redTurn) Color.red("Red's turn") else Color.white("White's turn"))
         input()

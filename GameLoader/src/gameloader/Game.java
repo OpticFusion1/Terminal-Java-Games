@@ -13,6 +13,9 @@ public class Game {
     public static boolean inPlay = true;
     public static boolean lockChanges = true;
 
+    public static int redScore = 0;
+    public static int whiteScore = 0;
+
     public static Place get(Point point) {
         if(point.inSquare(size))
             return Game.board[point.getY()][point.getX()];
