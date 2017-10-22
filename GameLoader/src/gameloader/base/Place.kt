@@ -1,4 +1,6 @@
-package gameloader
+package gameloader.base
+
+import gameloader.Game
 
 
 class Place(val point: Point, var color: Char) {
@@ -41,8 +43,7 @@ class Place(val point: Point, var color: Char) {
     }
 
     fun debug(): String {
-        val cords = point.print()
-        return "$cords: $type, $red"
+        return "${point.print()}: $type, $red"
     }
 
 }

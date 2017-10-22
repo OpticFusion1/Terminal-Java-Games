@@ -1,41 +1,52 @@
 package gameloader.checkers
 
 import gameloader.*
+import gameloader.base.None
+import gameloader.base.Place
+import gameloader.base.Point
+import gameloader.base.Rules
 
 class Checkers : Rules {
 
     override fun getName() = "Checkers"
 
     override fun setup() {
-        for(p in Game.allPoints) {
-            var place = Game.get(p)
+        Game.allPoints.forEach {
+            var place = Game.get(it)
 
             //Set each square
             place = when {
-                (p.x + p.y) % 2 == 0 -> place
-                p.y < 3 -> place.set('C', false, 'w')
-                p.y > 4 -> place.set('C', true, 'r')
+                (it.x + it.y) % 2 == 0 -> place
+                it.y < 3 -> place.set('C', false, 'w')
+                it.y > 4 -> place.set('C', true, 'r')
                 else -> place.set('_', true, 'b')
             }
 
-            if(!place.empty) place.action = Actions.Select(p)
+            if(!place.empty) place.action = Actions.Select(it)
         }
+
+        Game.redScore = 12
+        Game.whiteScore = 12
 
         Game.lockChanges = false
     }
 
     override fun clear() {
         Game.lockChanges = true
+        val newChanged = ArrayList<Point>()
 
-        for(p in Game.changed) {
-            val place = Game.get(p)
+        //Get changed squares
+        Game.changed.forEach {
+            val place = Game.get(it)
             if(place.color == 'g') {
                 //Reset square to blank
-                place.action = Actions.Select(p)
+                place.action = None()
                 place.remove()
+                newChanged.add(place.point)
             }
         }
 
+        Game.changed = newChanged
         Game.lockChanges = false
     }
 

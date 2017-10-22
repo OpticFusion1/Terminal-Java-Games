@@ -1,4 +1,4 @@
-package gameloader
+package gameloader.base
 
 open class Action(protected val base: Point, protected val target: Point) {
 

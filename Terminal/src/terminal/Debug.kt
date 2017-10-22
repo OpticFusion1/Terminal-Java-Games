@@ -1,6 +1,7 @@
 package terminal
 
 import gameloader.*
+import gameloader.base.Point
 
 fun main(args: Array<String>) {
     GameList().set(0)

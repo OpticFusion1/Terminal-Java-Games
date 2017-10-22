@@ -1,9 +1,9 @@
 package gameloader.minesweeper
 
-import gameloader.Place
-import gameloader.Rules
+import gameloader.base.Place
+import gameloader.base.Rules
 
-class Minesweeper(): Rules {
+class Minesweeper: Rules {
     override fun getName() = "Minesweeper"
 
     override fun setup() {

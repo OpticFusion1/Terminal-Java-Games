@@ -39,30 +39,31 @@ class Color {
         return WHITE + text + CLEAR;
     }
 
-    static String color(String text, char color) {
-        switch (color) {
-            case 'b':
-                return black(text);
-            case 'r':
-                return red(text);
-            case 'g':
-                return green(text);
-            case 'y':
-                return yellow(text);
-            case 'l':
-                return blue(text);
-            case 'c':
-                return cyan(text);
-            case 'p':
-                return purple(text);
-            case 'w':
-                return white(text);
-        }
-        return clear(text);
-    }
-
     static void reset() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
+
+    static String color(String text, char color) {
+        //Set color based on char
+        switch (color) {
+            case 'b':
+                return Color.black(text);
+            case 'r':
+                return Color.red(text);
+            case 'g':
+                return Color.green(text);
+            case 'y':
+                return Color.yellow(text);
+            case 'l':
+                return Color.blue(text);
+            case 'c':
+                return Color.cyan(text);
+            case 'p':
+                return Color.purple(text);
+            case 'w':
+                return Color.white(text);
+        }
+        return clear(text);
     }
 }
