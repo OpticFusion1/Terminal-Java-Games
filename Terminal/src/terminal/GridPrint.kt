@@ -5,7 +5,7 @@ import gameloader.GameList
 import gameloader.base.*
 
 fun main(args: Array<String>) {
-    GameList().set(0)
+    GameList().set(1)
     Game.setup(8)
 
     //Main game loop

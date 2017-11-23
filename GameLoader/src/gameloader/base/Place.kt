@@ -10,6 +10,7 @@ class Place(val point: Point, var color: Char) {
 
     var empty = true
     var red = false
+    var value = 0
 
     fun set(type: Char, red: Boolean, color: Char = ' '): Place {
         this.type = type

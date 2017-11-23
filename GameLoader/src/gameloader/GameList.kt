@@ -10,7 +10,7 @@ class GameList {
 
     fun options(): StringArray {
         val out = StringArray()
-        for(game in games) out.add(game.name)
+        games.forEach { out.add(it.name) }
         return out
     }
 

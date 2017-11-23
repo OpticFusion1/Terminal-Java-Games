@@ -12,11 +12,11 @@ class Checkers : Rules {
 
     override fun setup() {
         Game.allPoints.forEach {
-            var place = Game.get(it)
+            val place = Game.get(it)
 
             //Set each square
-            place = when {
-                (it.x + it.y) % 2 == 0 -> place
+            when {
+                (it.x + it.y) % 2 == 0 -> null
                 it.y < 3 -> place.set('C', false, 'w')
                 it.y > 4 -> place.set('C', true, 'r')
                 else -> place.set('_', true, 'b')
