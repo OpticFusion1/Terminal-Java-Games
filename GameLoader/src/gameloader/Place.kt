@@ -38,9 +38,6 @@ class Place(val point: Point, var color: Char) {
         Game.changed.add(point)
     }
 
-    fun debug(): String {
-        val cords = point.print()
-        return "$cords: $type, $red"
-    }
+    fun debug() = "$point: $type, $red"
 
 }
