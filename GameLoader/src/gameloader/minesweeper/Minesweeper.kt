@@ -30,27 +30,29 @@ class Minesweeper: Rules {
         //Calculate numbers
         Game.allPoints.forEach {
             val place = Game.get(it)
+            place.set('_', false, 'w')
+            place.empty = true
 
             if(!place.red) {
                 it.adjacent().forEach {
                     if(Game.get(it).red) {
                         place.value++
                         place.empty = false
-                        place.set('0' + place.value, false, 'l')
                     }
                 }
             }
-
-            if(place.empty)
-                place.set('.', false, 'w')
         }
+
+        clear()
     }
 
     override fun clear() {
-
+        Game.allPoints.forEach { Game.get(it).action = Actions.Reveal(it) }
     }
 
     override fun remove(place: Place?) {
 
     }
+
+    override fun getSize() = 8
 }

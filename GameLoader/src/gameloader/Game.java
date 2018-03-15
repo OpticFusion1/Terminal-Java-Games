@@ -26,13 +26,13 @@ public class Game {
         return null;
     }
 
-    public static void setup(int size) {
+    public static void setup() {
         //Initialize list variables
+        int size = Game.size = rules.getSize();
         board = new Place[size][size];
         changed = new ArrayList<>();
         allPoints = new ArrayList<>();
         choices = new HashMap<>();
-        Game.size = size;
 
         //Set up main grid
         for(int x = 0; x < size; x++) {

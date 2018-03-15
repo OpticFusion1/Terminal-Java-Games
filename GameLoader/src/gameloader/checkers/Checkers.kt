@@ -54,4 +54,6 @@ class Checkers : Rules {
         place.type = '_'
         place.color = 'b'
     }
+
+    override fun getSize() = 8
 }

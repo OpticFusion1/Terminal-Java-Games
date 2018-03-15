@@ -5,8 +5,8 @@ import gameloader.GameList
 import gameloader.base.*
 
 fun main(args: Array<String>) {
-    GameList().set(1)
-    Game.setup(8)
+    GameList().set(2)
+    Game.setup()
 
     //Main game loop
     while(Game.inPlay) {

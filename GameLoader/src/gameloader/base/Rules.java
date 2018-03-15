@@ -5,4 +5,5 @@ public interface Rules {
     void setup();
     void clear();
     void remove(Place place);
+    int getSize();
 }
