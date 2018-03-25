@@ -35,19 +35,38 @@ class TicTacToe: Rules {
 
     override fun getSize() = 5
 
-    class Select(private val p: Point) : Action(p, p) {
+    class Select(p: Point) : Action(p, p) {
         private val place: Place = Game.get(p)
 
         override fun run(): Boolean {
             if(Game.redTurn) {
                 place.set('X', true, 'r')
+                Game.redScore++
             } else {
                 place.set('O', true, 'w')
+                Game.whiteScore++
             }
             
             place.action = None()
-            Game.redTurn = !Game.redTurn
+            checkWin()
+            if(Game.inPlay)
+                Game.redTurn = !Game.redTurn
             return true
+        }
+
+        private fun inRow(row: Array<Place>) = (row.all { it.type == 'O' } || row.all { it.type == 'X' })
+                //.also { row.forEach { print(it.debug()) }; println() }
+
+        private fun checkWin() {
+            for(i in 0..4 step 2) {
+                if(inRow(arrayOf(Game.board[i][0], Game.board[i][2], Game.board[i][4]))
+                                || inRow(arrayOf(Game.board[0][i], Game.board[2][i], Game.board[4][i])))
+                    Game.inPlay = false
+            }
+
+            if(inRow(arrayOf(Game.board[0][0], Game.board[2][2], Game.board[4][4])) ||
+                    inRow(arrayOf(Game.board[0][4], Game.board[2][2], Game.board[4][0])))
+                Game.inPlay = false
         }
     }
 }

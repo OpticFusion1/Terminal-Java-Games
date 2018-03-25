@@ -9,36 +9,46 @@ import gameloader.base.Point
 internal class Actions {
     class Reveal(private val p: Point): Action(p, p) {
         override fun run(): Boolean {
-            if(Game.get(p).red)
-                return false
+            if(Game.get(p).red) {
+                Game.inPlay = false
+                Game.redTurn = true
+                Game.allPoints.forEach {
+                    Actions().show(Game.get(it))
+                }
+            }
 
-            Actions().show(Game.get(p))
 
-            if(Game.get(p).empty)
+            if(Game.get(p).value == 0)
                 spread(p)
 
+            Actions().show(Game.get(p))
             return true
         }
 
         private fun spread(p: Point) {
+            Actions().show(Game.get(p))
             p.adjacent().forEach {
                 val place = Game.get(it)
-                Actions().show(place)
-                if(place.empty && place.action is Actions.Reveal)
+                if(place.empty && place.value == 0 && place.action is Actions.Reveal)
                     spread(it)
+                else
+                    Actions().show(place)
             }
 
         }
     }
 
     fun show(place: Place) {
-        place.action = None()
+        if(place.empty) {
+            place.action = None()
+            Game.whiteScore--
 
-        //Reveal place value
-        when {
-            place.empty -> place.set('.', false, 'w')
-            place.red -> place.set('*', true, 'r')
-            else -> place.set('0' + place.value, false, 'l')
+            //Reveal place value
+            when {
+                place.red -> place.set('*', true, 'r')
+                place.value == 0 -> place.set('.', false, 'w')
+                else -> place.set('0' + place.value, false, 'l')
+            }
         }
     }
 }

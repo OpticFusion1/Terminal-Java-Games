@@ -5,7 +5,7 @@ import gameloader.GameList
 import gameloader.base.*
 
 fun main(args: Array<String>) {
-    GameList().set(2)
+    GameList().set(1)
     Game.setup()
 
     //Main game loop
@@ -37,7 +37,7 @@ private fun display() {
 
     fun columns() {
 		//Write column names
-        all += gridColor + "\n  "
+        all += "$gridColor\n  "
         (0 until board.size).forEach { all += "${'A' + it} " }
 
     }
@@ -45,13 +45,13 @@ private fun display() {
 
 	//Start actual grid
     for((i, row: Array<Place>) in board.withIndex()) {
-        all += gridColor + "\n$i "
+        all += "$gridColor\n$i "
 
 		//Write cells in row
         for(place in row)
             all += Color.color("${place.type} ", place.color)
 
-        all += gridColor + "$i"
+        all += "$gridColor$i"
     }
 
 	//Finalize grid

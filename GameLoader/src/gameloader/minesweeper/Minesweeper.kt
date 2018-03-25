@@ -11,6 +11,7 @@ class Minesweeper: Rules {
 
     override fun setup() {
         Game.redScore = Game.size
+        Game.whiteScore = Game.size * (Game.size - 1)
         val rand = Random()
 
         //Place mines
@@ -23,8 +24,7 @@ class Minesweeper: Rules {
 
             //Set actual mine
             val place = Game.get(point)
-            place.red = true
-            place.empty = false
+            place.value = -1
         }
 
         //Calculate numbers
@@ -33,12 +33,12 @@ class Minesweeper: Rules {
             place.set('_', false, 'w')
             place.empty = true
 
-            if(!place.red) {
+            if(place.value == -1) {
+                place.red = true
                 it.adjacent().forEach {
-                    if(Game.get(it).red) {
-                        place.value++
-                        place.empty = false
-                    }
+                    val otherPlace = Game.get(it)
+                    if(otherPlace.value > -1)
+                        otherPlace.value++
                 }
             }
         }
