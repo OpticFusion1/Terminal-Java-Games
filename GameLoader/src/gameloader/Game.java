@@ -2,28 +2,37 @@ package gameloader;
 
 import java.util.*;
 
+import gameloader.base.*;
+
 public class Game {
     public static Place[][] board;
     public static List<Point> changed;
     public static List<Point> allPoints;
+    public static Map<String, Action> choices;
     public static Rules rules;
-    static int size;
+    public static int size;
 
     public static boolean redTurn;
     public static boolean inPlay = true;
+    public static boolean lockChanges = true;
+    public static boolean singlePlayer = false;
+
+    public static int redScore = 0;
+    public static int whiteScore = 0;
 
     public static Place get(Point point) {
         if(point.inSquare(size))
             return Game.board[point.getY()][point.getX()];
-        return new Place(new Point(), ' ');
+        return null;
     }
 
-    public static void setup(int size) {
+    public static void setup() {
         //Initialize list variables
+        int size = Game.size = rules.getSize();
         board = new Place[size][size];
         changed = new ArrayList<>();
         allPoints = new ArrayList<>();
-        Game.size = size;
+        choices = new HashMap<>();
 
         //Set up main grid
         for(int x = 0; x < size; x++) {
@@ -37,12 +46,19 @@ public class Game {
     }
 
     public static boolean select(Point point) {
-        if(point != null) {
-            //Run selected action
-            Action a = Game.get(point).getAction();
-            rules.clear();
-            return a.run();
-        }
-        return false;
+        return point != null && select(Game.get(point).getAction());
+    }
+
+    public static boolean select(Action action) {
+        if(action == null) return false;
+
+        rules.clear();
+        choices.clear();
+        return action.run();
+    }
+
+    public static void changeScore(int change, boolean red) {
+        if(red) redScore += change;
+        else whiteScore += change;
     }
 }

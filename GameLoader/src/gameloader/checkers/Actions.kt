@@ -1,9 +1,9 @@
 package gameloader.checkers
 
-import gameloader.Action
+import gameloader.base.Action
 import gameloader.Game
-import gameloader.Place
-import gameloader.Point
+import gameloader.base.Place
+import gameloader.base.Point
 
 internal class Actions {
     class Select(private val p: Point, private val a: Boolean = false) : Action(p, p) {
@@ -16,14 +16,14 @@ internal class Actions {
 
                 //Move toward white
                 if(place.type == 'K' || place.red) {
-                    out = check(Point(1, -1)) || out
                     out = check(Point(-1, -1)) || out
+                    out = check(Point(1, -1)) || out
                 }
 
                 //Move toward red
                 if(place.type == 'K' || !place.red) {
-                    out = check(Point(1, 1)) || out
                     out = check(Point(-1, 1)) || out
+                    out = check(Point(1, 1)) || out
                 }
                 return out
             }
@@ -35,28 +35,26 @@ internal class Actions {
             val mid = p.add(dir)
             var out = false
 
+            fun setMove(point: Point, action: Action) {
+                //Show place to move to
+                val place = Game.get(point)
+                place.action = action
+                place.color = 'g'
+                place.type = '_'
+                place.change()
+                out = true
+
+                Game.choices.put("${Game.choices.size + 1}:${place.point.print()} ", place.action)
+                //this.place.color = 'g'
+            }
+
             if(Game.get(mid).empty) {
-                if(!a) {
-                    //Show place to move
-                    val place = Game.get(mid)
-                    place.action = Move(p, mid)
-                    place.color = 'g'
-                    place.type = '_'
-                    place.change()
-                    out = true
-                }
+                //Show place to move
+                if(!a) setMove(mid, Move(p, mid))
             } else if(Game.get(mid).red != place.red) {
                 //Check if open to jump
                 val end = mid.add(dir)
-                if(Game.get(end).empty) {
-                    //Show place of jump
-                    val place = Game.get(end)
-                    place.action = Jump(p, end, mid)
-                    place.color = 'g'
-                    place.type = '_'
-                    place.change()
-                    out = true
-                }
+                if(Game.get(end).empty) setMove(end, Jump(p, end, mid))
             }
             return out
         }
@@ -64,31 +62,46 @@ internal class Actions {
 
     class Move(base: Point, target: Point) : Action(base, target) {
         override fun run(): Boolean {
+            //Reset color
+            //Game.get(base).color = if(Game.get(base).red) 'r' else 'w'
+
             //Move piece to new location
             Game.get(base).move(target)
-            Game.get(target).action = Select(target)
+
             Actions().end(target)
             return true
         }
     }
 
-    class Jump(base: Point, target: Point, val remove: Point) : Action(base, target) {
+    class Jump(base: Point, target: Point, private val remove: Point) : Action(base, target) {
         override fun run(): Boolean {
+            //Make move
             Game.get(base).move(target)
             Game.get(remove).remove()
-            Game.get(target).action = Select(target)
-            if(Select(target, true).run()) return false
+
+            //Check for consecutive jumps
+            if(Select(target, true).run()) Game.redTurn = !Game.redTurn
+
+            //Finish move
+            Game.changeScore(-1, Game.get(remove).red)
             Actions().end(target)
             return true
         }
     }
 
     fun end(point: Point) {
-        if(Game.get(point).type == 'C') {
-            val red = Game.get(point).red
-            if((red && point.y == 0) || (!red && point.y == 7)) Game.get(point).type = 'K'
+        //Just some common finalizing
+        val place = Game.get(point)
+        if(place.type == 'C') {
+            val red = place.red
+            if((red && point.y == 0) || (!red && point.y == 7)) place.type = 'K'
         }
-        Game.redTurn = !Game.redTurn
+
+        place.action = Actions.Select(point)
+
+        //Next move
+        if(Game.redScore == 0 || Game.whiteScore == 0) Game.inPlay = false
+        else Game.redTurn = !Game.redTurn
     }
 
 }

@@ -1,15 +1,17 @@
 package gameloader
 
 import com.sun.xml.internal.fastinfoset.util.StringArray
+import gameloader.base.Rules
 import gameloader.checkers.Checkers
 import gameloader.minesweeper.Minesweeper
+import gameloader.tictactoe.TicTacToe
 
 class GameList {
-    val games: Array<Rules> = arrayOf(Checkers(), Minesweeper())
+    val games: Array<Rules> = arrayOf(Checkers(), Minesweeper(), TicTacToe())
 
     fun options(): StringArray {
         val out = StringArray()
-        for(game in games) out.add(game.name)
+        games.forEach { out.add(it.name) }
         return out
     }
 

@@ -1,35 +1,69 @@
+package terminal;
 
 class Color {
-    String Clear = "\u001B[0m";
-    String Black = "\u001B[30m";
-    String Red = "\u001B[31m";
-    String Green = "\u001B[32m";
-    String Yellow = "\u001B[33m";
-    String Blue = "\u001B[34m";
-    String Purple = "\u001B[35m";
-    String Cyan = "\u001B[36m";
-    String White = "\u001B[37m";
+    static final String CLEAR = "\u001B[0m";
+    static final String BLACK = "\u001B[90m";
+    static final String RED = "\u001B[31m";
+    static final String GREEN = "\u001B[92m";
+    static final String YELLOW = "\u001B[33m";
+    static final String BLUE = "\u001B[34m";
+    static final String PURPLE = "\u001B[35m";
+    static final String CYAN = "\u001B[36m";
+    static final String WHITE = "\u001B[39m";
 
-    String Black(String text) {
-        return Black + text + Clear;
+    static String clear(String text) {
+        return CLEAR + text;
     }
-    String Red(String text) {
-        return Red + text + Clear;
+    static String black(String text) {
+        return BLACK + text + CLEAR;
     }
-    String Green(String text) {
-        return Green + text + Clear;
+    static String red(String text) {
+        return RED + text + CLEAR;
     }
-    String Yellow(String text) {
-        return Yellow + text + Clear;
+    static String green(String text) {
+        return GREEN + text + CLEAR;
     }
-    String Blue(String text) {
-        return Blue + text + Clear;
+    static String yellow(String text) {
+        return YELLOW + text + CLEAR;
     }
-    String Cyan(String text) { return Cyan + text + Clear; }
-    String Purple(String text) {
-        return Purple + text + Clear;
+    static String blue(String text) {
+        return BLUE + text + CLEAR;
     }
-    String White(String text) {
-        return White + text + Clear;
+    static String cyan(String text) {
+        return CYAN + text + CLEAR;
+    }
+    static String purple(String text) {
+        return PURPLE + text + CLEAR;
+    }
+    static String white(String text) {
+        return WHITE + text + CLEAR;
+    }
+
+    static void reset() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
+    static String color(String text, char color) {
+        //Set color based on char
+        switch (color) {
+            case 'b':
+                return Color.black(text);
+            case 'r':
+                return Color.red(text);
+            case 'g':
+                return Color.green(text);
+            case 'y':
+                return Color.yellow(text);
+            case 'l':
+                return Color.blue(text);
+            case 'c':
+                return Color.cyan(text);
+            case 'p':
+                return Color.purple(text);
+            case 'w':
+                return Color.white(text);
+        }
+        return clear(text);
     }
 }
