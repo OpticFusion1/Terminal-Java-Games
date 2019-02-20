@@ -2,7 +2,6 @@ package gameloader.tictactoe
 
 import gameloader.Game
 import gameloader.base.*
-import java.util.*
 
 class TicTacToe: Rules {
     override fun getName() = "Tic-Tac-Toe"

@@ -49,6 +49,10 @@ internal class Actions {
                 place.value == 0 -> place.set('.', false, 'w')
                 else -> place.set('0' + place.value, false, 'l')
             }
+
+            if(Game.whiteScore == 0) {
+                Game.inPlay = false
+            }
         }
     }
 }

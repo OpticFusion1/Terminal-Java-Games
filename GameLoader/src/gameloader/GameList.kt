@@ -6,7 +6,7 @@ import gameloader.checkers.Checkers
 import gameloader.minesweeper.Minesweeper
 import gameloader.tictactoe.TicTacToe
 
-class GameList {
+public class GameList {
     val games: Array<Rules> = arrayOf(Checkers(), Minesweeper(), TicTacToe())
 
     fun options(): StringArray {

@@ -5,7 +5,14 @@ import gameloader.GameList
 import gameloader.base.*
 
 fun main(args: Array<String>) {
-    GameList().set(1)
+    println(GameList().options().array.joinToString())
+    var gameI: Int? = null
+
+    while(gameI == null) {
+        gameI = readLine()?.toInt()
+    }
+
+    GameList().set(gameI - 1)
     Game.setup()
 
     //Main game loop
